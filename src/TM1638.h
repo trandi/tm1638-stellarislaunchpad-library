@@ -51,9 +51,10 @@ public:
 
     void setDisplayDigit(unsigned char digit, unsigned char pos, unsigned char dot, const unsigned char numberFont[] = NUMBER_FONT);
 
-    void clearDisplayDigit(unsigned char pos, tBoolean dot);
+    void clearDisplayDigit(unsigned char pos, tBoolean dot = false);
 
     void setDisplay(std::string str, const unsigned char dots = 0, const unsigned char pos = 0, const unsigned char font[] = FONT_DEFAULT);
+    void setDisplay(signed long number, const unsigned char font[] = FONT_DEFAULT);
 
 	void clearDisplay();
 

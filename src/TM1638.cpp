@@ -153,6 +153,29 @@ void TM1638::setDisplay(std::string str, const unsigned char dots, const unsigne
 	}
 }
 
+void TM1638::setDisplay(signed long number, const unsigned char font[]){
+	unsigned long absNum = number < 0 ? -number : number;
+	tBoolean minus = number < 0;
+	if(absNum > 99999999L){
+		setDisplay("N TOO BG");
+	}else{
+		for(signed char pos = 7; pos >= 0; pos --){
+			if(absNum != 0){
+				setDisplayDigit(absNum % 10, pos, false);
+				absNum /= 10; // move to the next digit to the left
+			}else{
+				// we are done, clear the rest of the display and or put a minus if necessary
+				if(minus){
+					sendChar(pos, font['-' - 32], false);
+					minus = false; // only 1 is enough ! :)
+				}else{
+					clearDisplayDigit(pos);
+				}
+			}
+		}
+	}
+}
+
 void TM1638::clearDisplay() {
 	for (int i = 0; i < 8; i++) {
 		sendData(i << 1, 0x00);
