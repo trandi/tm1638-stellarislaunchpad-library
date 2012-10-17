@@ -32,6 +32,13 @@ TM1638::TM1638(unsigned long portSysctlPeriph, unsigned long portBase, unsigned 
 	this->dataPin = dataPin;
 	this->strobePin = strobePin;
 
+	// init the current state
+	for(unsigned char i=0; i<8; i++){
+		currentChars[i] = 0; // no character
+		currentDots[i] = false; // no dot
+	}
+
+
 	// GPIO port needs to be enabled so these pins can be used.
 	SysCtlPeripheralEnable(portSysctlPeriph);
 
@@ -111,8 +118,14 @@ void TM1638::sendData(const unsigned char address, const unsigned char data) {
 /**
  * 0b10000000 = 0x80
  */
-void TM1638::sendChar(const unsigned char pos, const unsigned char data, tBoolean dot) {
+void TM1638::sendChar(const unsigned char pos, const unsigned char data, tBoolean dot, tBoolean storeData) {
 	sendData(pos << 1, data | (dot ? 0x80 : 0));
+
+	// store the info for later use if necessary
+	if(storeData){
+		currentChars[pos] = data;
+		currentDots[pos] = dot;
+	}
 }
 
 
@@ -186,6 +199,31 @@ void TM1638::clearDisplay() {
 void TM1638::setLED(const unsigned char pos, const unsigned char color) {
 	sendData((pos << 1) + 1, color);
 }
+
+
+void TM1638::blinkBar(unsigned char pos, unsigned char bar, unsigned char delayFactor){
+	// add the bar to the current char
+	sendChar(pos, currentChars[pos] | bar, currentDots[pos], false);
+	// wait a little
+	SysCtlDelay(10000 * delayFactor);
+	// remove the bar by putting back the char as it was
+	sendChar(pos, currentChars[pos], currentDots[pos], false);
+}
+
+void TM1638::blinkAround(unsigned char speed){
+	unsigned char delayFactor = 255 - speed;
+	blinkBar(0, UPPER_LEFT_BAR, delayFactor);
+	blinkBar(0, LOWER_LEFT_BAR, delayFactor);
+	for(unsigned char i=0; i<8; i++){
+		blinkBar(i, LOWER_BAR, delayFactor);
+	}
+	blinkBar(7, LOWER_RIGHT_BAR, delayFactor);
+	blinkBar(7, UPPER_RIGHT_BAR, delayFactor);
+	for(signed char i=7; i>=0; i--){
+		blinkBar(i, UPPER_BAR, delayFactor);
+	}
+}
+
 
 
 void TM1638::strobeSelect() {

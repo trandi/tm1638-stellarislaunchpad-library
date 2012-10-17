@@ -78,6 +78,8 @@ int main(void){
 			SysCtlDelay(10000000);
 			segmentDisplay.setDisplay(-2568);
 			SysCtlDelay(10000000);
+			segmentDisplay.setDisplay("   --   ", 0, 0);
+			segmentDisplay.blinkAround(150);
 		}
 
 		SysCtlDelay(10000000);

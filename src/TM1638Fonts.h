@@ -32,6 +32,12 @@
 #ifndef TM1638FONTS_H_
 #define TM1638FONTS_H_
 
+const unsigned char LOWER_LEFT_BAR = 0x10;
+const unsigned char UPPER_LEFT_BAR = 0x20;
+const unsigned char LOWER_RIGHT_BAR = 0x04;
+const unsigned char UPPER_RIGHT_BAR = 0x02;
+const unsigned char LOWER_BAR = 0x08;
+const unsigned char UPPER_BAR = 0x01;
 
 // definition for standard hexadecimal numbers
 const unsigned char NUMBER_FONT[] = {

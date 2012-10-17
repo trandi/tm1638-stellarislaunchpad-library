@@ -63,9 +63,11 @@ public:
 
     unsigned char getButtons();
 
+    void blinkAround(unsigned char speed = 1);
+
 protected:
     void sendData(const unsigned char address, const unsigned char data);
-    void sendChar(const unsigned char pos, const unsigned char data, tBoolean dot);
+    void sendChar(const unsigned char pos, const unsigned char data, tBoolean dot, tBoolean storeData = true);
     void sendCommand(const unsigned char command);
 
     void send(unsigned char data);
@@ -74,11 +76,15 @@ protected:
     void strobeSelect();
     void strobeDeselect();
 
+    void blinkBar(unsigned char bar, unsigned char pos, unsigned char delayFactor);
+
     unsigned long portBase;
     unsigned char clockPin;
     unsigned char dataPin;
     unsigned char strobePin;
 
+    unsigned char currentChars[8];
+    tBoolean currentDots[8];
 };
 
 #endif /* TM1638_H_ */
